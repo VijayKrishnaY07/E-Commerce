@@ -9,13 +9,13 @@ import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 // Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBl0BWAyJdZYPqDfkFByw48Sud9M-K5tjU",
-  authDomain: "e-commerce-b3e5e.firebaseapp.com",
-  projectId: "e-commerce-b3e5e",
-  storageBucket: "e-commerce-b3e5e.firebasestorage.app",
-  messagingSenderId: "472657582059",
-  appId: "1:472657582059:web:16d8c72ee240b1d3ccebae",
-  measurementId: "G-6F864V00S4",
+  apiKey: "xxxxx",
+  authDomain: "xxx",
+  projectId: "xxx",
+  storageBucket: "xx",
+  messagingSenderId: "x",
+  appId: "x",
+  measurementId: "x",
 };
 
 // Initialize Firebase
