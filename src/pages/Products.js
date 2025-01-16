@@ -1,33 +1,35 @@
 import React, { useContext } from "react";
 import products from "../data/products";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleFavorite } from "../redux/favoriteSlice";
 import {
   Container,
   Typography,
   Card,
   CardContent,
   CardMedia,
-  Button,
-  Grid,
+  IconButton,
+  Box,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { AuthContext } from "../context/AuthContext";
-import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const Products = () => {
   const dispatch = useDispatch();
-  const { user } = useContext(AuthContext); // ✅ Get user data
-  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const favorites = useSelector((state) => state.favorites);
 
-  const handleAddToCart = (product) => {
-    if (!user) {
-      toast.warning("You need to sign in to add products to the cart!");
-      navigate("/signin");
+  const isFavorite = (productId) =>
+    favorites && favorites.some((item) => item?.id === productId);
+
+  const handleToggleFavorite = (product) => {
+    if (!user || !user.email) {
+      alert("Please sign in to add items to favorites.");
       return;
     }
-    dispatch(addToCart({ userEmail: user.email, product })); // ✅ Add product to cart if logged in
-    toast.success(`${product.name} added to cart!`);
+    dispatch(toggleFavorite({ userEmail: user.email, product }));
   };
 
   return (
@@ -40,78 +42,76 @@ const Products = () => {
       >
         Apple Products
       </Typography>
-      <Grid container spacing={4}>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 3,
+          justifyContent: "center",
+        }}
+      >
         {products.map((product) => (
-          <Grid item xs={12} sm={6} md={4} key={product.id}>
-            <Card
+          <Card
+            key={product.id}
+            sx={{
+              width: 300,
+              boxShadow: 3,
+              borderRadius: 4,
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
+            {/* Favorite Icon */}
+            <IconButton
+              onClick={() => handleToggleFavorite(product)}
               sx={{
-                boxShadow: 3,
-                borderRadius: 4,
-                overflow: "hidden",
-                transition: "transform 0.2s",
-                ":hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: 6,
-                },
+                position: "absolute",
+                top: 10,
+                left: 10,
+                backgroundColor: "white",
+                ":hover": { backgroundColor: "#F5F5F5" },
               }}
             >
-              <Link
-                to={`/product/${product.id}`}
-                style={{ textDecoration: "none", color: "inherit" }}
+              {isFavorite(product.id) ? (
+                <FavoriteIcon sx={{ color: "#FF3B30" }} />
+              ) : (
+                <FavoriteBorderIcon sx={{ color: "#A1A1A6" }} />
+              )}
+            </IconButton>
+
+            {/* Link to Product Details */}
+            <Link
+              to={`/product/${product.id}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <CardMedia
+                component="img"
+                image={product.image}
+                alt={product.name}
+                sx={{ height: 200, objectFit: "contain" }}
+              />
+            </Link>
+
+            {/* Product Details */}
+            <CardContent sx={{ padding: 3, textAlign: "center" }}>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                {product.name}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                sx={{ marginBottom: 2 }}
               >
-                <CardMedia
-                  component="img"
-                  height="240"
-                  image={product.image}
-                  alt={product.name}
-                  sx={{
-                    objectFit: "cover",
-                  }}
-                />
-              </Link>
-              <CardContent sx={{ padding: 3 }}>
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: "bold", color: "#1D1D1F" }}
-                >
-                  {product.name}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  sx={{ marginBottom: 2, color: "#6E6E73" }}
-                >
-                  {product.description}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: "bold", color: "#0071E3" }}
-                >
-                  ${product.price}
-                </Typography>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  sx={{
-                    backgroundColor: "#0071E3",
-                    color: "white",
-                    fontWeight: "bold",
-                    borderRadius: 3,
-                    paddingY: 1.5,
-                    marginTop: 2,
-                    ":hover": {
-                      backgroundColor: "#005BB5",
-                    },
-                  }}
-                  onClick={() => handleAddToCart(product)}
-                >
-                  Add to Cart
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
+                {product.description}
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                ${product.price}
+              </Typography>
+            </CardContent>
+          </Card>
         ))}
-      </Grid>
+      </Box>
     </Container>
   );
 };

@@ -13,10 +13,12 @@ import { auth } from "../firebaseConfig";
 import { signOut } from "firebase/auth";
 import { useSelector } from "react-redux";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
   const cart = useSelector((state) => state.cart);
+  const favorites = useSelector((state) => state.favorites);
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const handleLogout = async () => {
@@ -24,14 +26,7 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar
-      position="fixed"
-      sx={{
-        backgroundColor: "#F5F5F7",
-        boxShadow: 0,
-        borderBottom: "1px solid #D1D1D6",
-      }}
-    >
+    <AppBar position="fixed" sx={{ backgroundColor: "#0071E3", boxShadow: 0 }}>
       <Container maxWidth="lg">
         <Toolbar
           sx={{
@@ -41,19 +36,15 @@ const Navbar = () => {
             width: "100%",
           }}
         >
-          {/* ✅ Left: Store Name */}
+          {/* Store Name */}
           <Typography
             variant="h6"
-            sx={{
-              fontWeight: "bold",
-              color: "#1D1D1F",
-              letterSpacing: "0.8px",
-            }}
+            sx={{ fontWeight: "bold", color: "white", letterSpacing: "0.8px" }}
           >
             Tech Gadgets Store
           </Typography>
 
-          {/* ✅ Right: Navigation */}
+          {/* Navigation */}
           <Box
             sx={{
               display: "flex",
@@ -66,7 +57,7 @@ const Navbar = () => {
               color="inherit"
               component={Link}
               to="/"
-              sx={{ fontSize: "1rem", fontWeight: 500, color: "#1D1D1F" }}
+              sx={{ fontSize: "1rem", fontWeight: 500 }}
             >
               Home
             </Button>
@@ -74,26 +65,35 @@ const Navbar = () => {
               color="inherit"
               component={Link}
               to="/products"
-              sx={{ fontSize: "1rem", fontWeight: 500, color: "#1D1D1F" }}
+              sx={{ fontSize: "1rem", fontWeight: 500 }}
             >
               Products
             </Button>
             {user && (
-              <Button
-                color="inherit"
-                component={Link}
-                to="/cart"
-                sx={{ fontSize: "1rem", fontWeight: 500, color: "#1D1D1F" }}
-              >
-                <ShoppingBagOutlinedIcon
-                  sx={{
-                    fontSize: "1.2rem",
-                    marginRight: "5px",
-                    color: "#1D1D1F",
-                  }}
-                />
-                Cart ({cartItemCount})
-              </Button>
+              <>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/favorites"
+                  sx={{ fontSize: "1rem", fontWeight: 500 }}
+                >
+                  <FavoriteOutlinedIcon
+                    sx={{ fontSize: "1.2rem", marginRight: "5px" }}
+                  />
+                  Favorites ({favorites.length})
+                </Button>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to="/cart"
+                  sx={{ fontSize: "1rem", fontWeight: 500 }}
+                >
+                  <ShoppingBagOutlinedIcon
+                    sx={{ fontSize: "1.2rem", marginRight: "5px" }}
+                  />
+                  Cart ({cartItemCount})
+                </Button>
+              </>
             )}
             {user ? (
               <>
@@ -105,7 +105,6 @@ const Navbar = () => {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
-                    color: "#1D1D1F",
                   }}
                 >
                   {user.name}
@@ -113,7 +112,7 @@ const Navbar = () => {
                 <Button
                   color="inherit"
                   onClick={handleLogout}
-                  sx={{ fontSize: "1rem", fontWeight: 500, color: "#1D1D1F" }}
+                  sx={{ fontSize: "1rem", fontWeight: 500 }}
                 >
                   Signout
                 </Button>
@@ -123,9 +122,9 @@ const Navbar = () => {
                 color="inherit"
                 component={Link}
                 to="/signin"
-                sx={{ fontSize: "1rem", fontWeight: 500, color: "#1D1D1F" }}
+                sx={{ fontSize: "1rem", fontWeight: 500 }}
               >
-                Sign-in
+                Signin
               </Button>
             )}
           </Box>

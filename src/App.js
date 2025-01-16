@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductPage from "./pages/ProductPage";
+import Favorites from "./pages/Favorites";
 import Cart from "./pages/Cart";
 import AuthProvider from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -36,6 +37,15 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/favorites"
+            element={
+              <ProtectedRoute>
+                <Favorites />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/cart"
             element={

@@ -19,7 +19,7 @@ import {
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-  const { user } = useContext(AuthContext); // ✅ Get logged-in user's email
+  const { user } = useContext(AuthContext);
 
   if (!user) {
     return (
@@ -35,10 +35,10 @@ const Cart = () => {
   }
 
   // Calculate Total Price
-  const totalPrice = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const totalPrice = cart.reduce((acc, item) => {
+    const itemTotal = item.price ? item.price * item.quantity : 0;
+    return acc + itemTotal;
+  }, 0);
 
   return (
     <Container maxWidth="md" sx={{ marginTop: 8, paddingBottom: 5 }}>
@@ -77,7 +77,6 @@ const Cart = () => {
                       backgroundColor: "#FFFFFF",
                     }}
                   >
-                    {/* ✅ Product Image */}
                     <CardMedia
                       component="img"
                       sx={{
@@ -86,11 +85,10 @@ const Cart = () => {
                         objectFit: "contain",
                         borderRadius: 3,
                       }}
-                      image={product.image}
-                      alt={product.name}
+                      image={product.image || "/assets/images/placeholder.jpg"} // Placeholder for missing images
+                      alt={product.name || "Unnamed Product"}
                     />
 
-                    {/* ✅ Product Details */}
                     <Box
                       sx={{
                         flexGrow: 1,
@@ -102,23 +100,26 @@ const Cart = () => {
                         variant="h6"
                         sx={{ fontWeight: "bold", color: "#1D1D1F" }}
                       >
-                        {product.name}
+                        {product.name || "Unnamed Product"}
                       </Typography>
                       <Typography
                         variant="body2"
                         sx={{ color: "#6E6E73", marginBottom: 1 }}
                       >
-                        ${product.price} x {product.quantity}
+                        ${product.price ? product.price : "N/A"} x{" "}
+                        {product.quantity}
                       </Typography>
                       <Typography
                         variant="h6"
                         sx={{ fontWeight: "bold", color: "#0071E3" }}
                       >
-                        ${product.price * product.quantity}
+                        Total: $
+                        {product.price
+                          ? (product.price * product.quantity).toFixed(2)
+                          : "0.00"}
                       </Typography>
                     </Box>
 
-                    {/* ✅ Quantity & Remove Button */}
                     <Box
                       sx={{
                         display: "flex",
@@ -182,7 +183,6 @@ const Cart = () => {
             ))}
           </List>
 
-          {/* ✅ Total Price & Checkout */}
           <Box sx={{ textAlign: "center", marginTop: 4 }}>
             <Typography
               variant="h5"

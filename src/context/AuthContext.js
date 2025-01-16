@@ -2,22 +2,25 @@ import React, { createContext, useState, useEffect } from "react";
 import { getCurrentUser } from "../firebaseConfig";
 import { useDispatch } from "react-redux";
 import { fetchCartFromFirebase } from "../redux/cartSlice";
+import { fetchFavoritesFromFirebase } from "../redux/favoriteSlice";
 
 export const AuthContext = createContext();
 
-const formatUserName = (name) => {
-  if (!name) return "User";
-
-  return name
-    .trim() // ✅ Remove extra spaces
-    .replace(/[0-9]/g, "") // ✅ Remove numbers
-    .split(/\s+/) // ✅ Split by spaces
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // ✅ Capitalize
-    .join(" "); // ✅ Rejoin words
-};
+const formatUserName = (name) =>
+  name
+    ? name
+        .trim()
+        .replace(/[0-9]/g, "")
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
+    : "User";
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,10 +32,16 @@ const AuthProvider = ({ children }) => {
             firebaseUser.displayName || firebaseUser.email.split("@")[0]
           ),
         };
+
+        localStorage.setItem("user", JSON.stringify(formattedUser));
         setUser(formattedUser);
-        dispatch(fetchCartFromFirebase(formattedUser.email)); // ✅ Load cart with user email
+
+        // Fetch Firebase data
+        dispatch(fetchCartFromFirebase(formattedUser.email));
+        dispatch(fetchFavoritesFromFirebase(formattedUser.email));
       } else {
         setUser(null);
+        localStorage.removeItem("user");
       }
     });
   }, [dispatch]);
