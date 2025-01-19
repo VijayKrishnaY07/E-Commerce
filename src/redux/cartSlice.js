@@ -1,14 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { saveCartToFirebase, loadCartFromFirebase } from "../firebaseConfig";
 
-// Async action to load cart from Firebase
+// Fetch cart from Firebase
 export const fetchCartFromFirebase = createAsyncThunk(
   "cart/fetchCart",
-  async (userEmail) => {
-    if (!userEmail) {
-      throw new Error("❌ No user email provided for loading cart.");
+  async (userEmail, { rejectWithValue }) => {
+    try {
+      const cart = await loadCartFromFirebase(userEmail);
+      return cart || [];
+    } catch (error) {
+      console.error("Error loading cart from Firebase:", error.message);
+      return rejectWithValue(error.message);
     }
-    return await loadCartFromFirebase(userEmail);
   }
 );
 
@@ -19,8 +22,8 @@ const cartSlice = createSlice({
     addToCart: (state, action) => {
       const { userEmail, product } = action.payload;
 
-      if (!product || !product.id || !product.price || !product.image) {
-        console.error("❌ Invalid product data. Cannot add to cart:", product);
+      if (!userEmail) {
+        console.error("User email is required for adding items to cart.");
         return state;
       }
 
@@ -32,32 +35,63 @@ const cartSlice = createSlice({
         state.push({ ...product, quantity: 1 });
       }
 
-      saveCartToFirebase(userEmail, state); // Save updated cart to Firebase
-      return state;
+      try {
+        saveCartToFirebase(userEmail, state);
+      } catch (error) {
+        console.error("Error saving cart to Firebase:", error.message);
+      }
     },
     removeFromCart: (state, action) => {
       const { userEmail, productId } = action.payload;
+
       const updatedCart = state.filter((item) => item.id !== productId);
-      saveCartToFirebase(userEmail, updatedCart);
+
+      try {
+        saveCartToFirebase(userEmail, updatedCart);
+      } catch (error) {
+        console.error(
+          "Error removing item from cart in Firebase:",
+          error.message
+        );
+      }
+
       return updatedCart;
     },
     updateCartQuantity: (state, action) => {
       const { userEmail, productId, quantity } = action.payload;
+
       const item = state.find((item) => item.id === productId);
       if (item) {
         item.quantity = quantity;
+
+        try {
+          saveCartToFirebase(userEmail, state);
+        } catch (error) {
+          console.error(
+            "Error updating cart quantity in Firebase:",
+            error.message
+          );
+        }
       }
-      saveCartToFirebase(userEmail, state);
     },
     clearCart: (state, action) => {
       const userEmail = action.payload;
-      saveCartToFirebase(userEmail, []);
+
+      try {
+        saveCartToFirebase(userEmail, []);
+      } catch (error) {
+        console.error("Error clearing cart in Firebase:", error.message);
+      }
+
       return [];
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCartFromFirebase.fulfilled, (state, action) => {
       return action.payload || [];
+    });
+    builder.addCase(fetchCartFromFirebase.rejected, (state, action) => {
+      console.error("Failed to fetch cart:", action.payload);
     });
   },
 });

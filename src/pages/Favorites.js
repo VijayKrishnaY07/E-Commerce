@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { addToCart, fetchCartFromFirebase } from "../redux/cartSlice";
 import {
-  addToCart,
-  removeFromCart,
-  updateCartQuantity,
-} from "../redux/cartSlice";
-import { toggleFavorite } from "../redux/favoriteSlice";
+  toggleFavorite,
+  fetchFavoritesFromFirebase,
+} from "../redux/favoriteSlice";
 import {
   Container,
   Typography,
@@ -14,41 +13,59 @@ import {
   CardMedia,
   Box,
   IconButton,
-  TextField,
   Button,
 } from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import TextField from "@mui/material/TextField";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { updateCartQuantity, removeFromCart } from "../redux/cartSlice";
 
 const Favorites = () => {
   const favorites = useSelector((state) => state.favorites);
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // Fetch cart and favorites data on component mount
+  useEffect(() => {
+    if (user?.email) {
+      dispatch(fetchCartFromFirebase(user.email));
+      dispatch(fetchFavoritesFromFirebase(user.email));
+    }
+  }, [dispatch, user]);
 
   const handleAddToCart = (product) => {
     if (!product || !product.id) {
       console.error("Invalid product object:", product);
       return;
     }
-    dispatch(addToCart({ userEmail: "test@example.com", product }));
-    dispatch(toggleFavorite({ userEmail: "test@example.com", product }));
+    if (!user?.email) {
+      toast.error("You must be logged in to add items to the cart.");
+      return;
+    }
+
+    // Add to cart and persist in Firebase
+    dispatch(addToCart({ userEmail: user.email, product }));
+
+    // Remove from favorites and persist in Firebase
+    dispatch(toggleFavorite({ userEmail: user.email, product }));
+
+    toast.success(`${product.name} moved to cart!`);
   };
 
-  const handleUpdateQuantity = (productId, newQuantity) => {
-    dispatch(
-      updateCartQuantity({
-        userEmail: "test@example.com",
-        productId,
-        quantity: Math.max(1, newQuantity),
-      })
-    );
-  };
-
-  const handleRemoveFromCart = (productId) => {
-    dispatch(removeFromCart({ userEmail: "test@example.com", productId }));
+  const handleCheckout = () => {
+    if (!cart.length) {
+      toast.error("Your cart is empty. Add items before proceeding.");
+      return;
+    }
+    navigate("/checkout");
   };
 
   const totalPrice = cart.reduce(
@@ -72,7 +89,11 @@ const Favorites = () => {
           height: "80vh",
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 2 }}>
+        <Typography
+          align="center"
+          variant="h5"
+          sx={{ fontWeight: "bold", marginBottom: 2 }}
+        >
           Favorites
         </Typography>
         <AnimatePresence>
@@ -84,13 +105,7 @@ const Favorites = () => {
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.5 }}
             >
-              <Card
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  padding: 2,
-                }}
-              >
+              <Card sx={{ display: "flex", alignItems: "center", padding: 2 }}>
                 <CardMedia
                   component="img"
                   image={product?.image}
@@ -110,10 +125,7 @@ const Favorites = () => {
                   <IconButton
                     onClick={() =>
                       dispatch(
-                        toggleFavorite({
-                          userEmail: "test@example.com",
-                          product,
-                        })
+                        toggleFavorite({ userEmail: user.email, product })
                       )
                     }
                     color="error"
@@ -141,7 +153,11 @@ const Favorites = () => {
           position: "relative",
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 2 }}>
+        <Typography
+          align="center"
+          variant="h5"
+          sx={{ fontWeight: "bold", marginBottom: 2 }}
+        >
           Your Cart
         </Typography>
         <Box sx={{ overflowY: "auto", height: "calc(100% - 100px)" }}>
@@ -154,12 +170,24 @@ const Favorites = () => {
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
+                {/* <Card
+                  sx={{ display: "flex", alignItems: "center", padding: 2 }}
+                >
+                  <CardMedia
+                    component="img"
+                    image={item?.image}
+                    alt={item?.name || "Cart Item"}
+                    sx={{ width: 80, height: 80 }}
+                  />
+                  <CardContent sx={{ flex: 1 }}>
+                    <Typography variant="h6">{item?.name}</Typography>
+                    <Typography variant="body2">
+                      ${item?.price} x {item?.quantity}
+                    </Typography>
+                  </CardContent>
+                </Card> */}
                 <Card
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    padding: 2,
-                  }}
+                  sx={{ display: "flex", alignItems: "center", padding: 2 }}
                 >
                   <CardMedia
                     component="img"
@@ -174,17 +202,40 @@ const Favorites = () => {
                     </Typography>
                   </CardContent>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    {/* Quantity Input Field */}
                     <TextField
                       type="number"
                       value={item?.quantity}
-                      onChange={(e) =>
-                        handleUpdateQuantity(item.id, Number(e.target.value))
-                      }
-                      sx={{ width: 80 }}
+                      onChange={(e) => {
+                        const newQuantity = Math.max(1, Number(e.target.value)); // Prevent quantity less than 1
+                        dispatch(
+                          updateCartQuantity({
+                            userEmail: user.email,
+                            productId: item.id,
+                            quantity: newQuantity,
+                          })
+                        );
+                      }}
+                      sx={{
+                        width: "60px",
+                        "& input": {
+                          textAlign: "center",
+                          fontSize: "16px",
+                          fontWeight: "bold",
+                        },
+                      }}
                     />
+                    {/* Delete Button */}
                     <IconButton
                       sx={{ color: "gray" }}
-                      onClick={() => handleRemoveFromCart(item.id)}
+                      onClick={() =>
+                        dispatch(
+                          removeFromCart({
+                            userEmail: user.email,
+                            productId: item.id,
+                          })
+                        )
+                      }
                     >
                       <DeleteOutlinedIcon />
                     </IconButton>
@@ -208,18 +259,13 @@ const Favorites = () => {
             Total: ${totalPrice.toFixed(2)}
           </Typography>
           <Button
-            component={Link}
-            to="/checkout"
             variant="contained"
             sx={{
               backgroundColor: "#0071E3",
               color: "white",
-              fontSize: "16px",
-              fontWeight: "bold",
-              ":hover": {
-                backgroundColor: "#005BB5",
-              },
+              ":hover": { backgroundColor: "#005BB5" },
             }}
+            onClick={handleCheckout}
           >
             Proceed to Checkout
           </Button>

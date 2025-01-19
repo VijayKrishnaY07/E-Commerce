@@ -12,7 +12,7 @@ export const fetchFavoritesFromFirebase = createAsyncThunk(
       const favorites = await loadFavoritesFromFirebase(userEmail);
       return favorites || [];
     } catch (error) {
-      console.error("Error loading favorites:", error.message);
+      console.error("Error loading favorites from Firebase:", error.message);
       return rejectWithValue(error.message);
     }
   }
@@ -38,12 +38,16 @@ const favoritesSlice = createSlice({
         state.push(product); // Add to favorites
       }
 
-      saveFavoritesToFirebase(userEmail, state);
+      try {
+        saveFavoritesToFirebase(userEmail, state);
+      } catch (error) {
+        console.error("Error saving favorites to Firebase:", error.message);
+      }
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchFavoritesFromFirebase.fulfilled, (state, action) => {
-      return action.payload;
+      return action.payload || [];
     });
     builder.addCase(fetchFavoritesFromFirebase.rejected, (state, action) => {
       console.error("Failed to fetch favorites:", action.payload);

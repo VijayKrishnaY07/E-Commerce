@@ -8,9 +8,10 @@ import {
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 // Firebase Configuration
+
 const firebaseConfig = {
   apiKey: "xxx",
-  authDomain: "xxxx",
+  authDomain: "xxx",
   projectId: "xxx",
   storageBucket: "xxx",
   messagingSenderId: "xxx",
@@ -43,65 +44,67 @@ const getCurrentUser = (callback) => {
   });
 };
 
-// Save and Load Data Helpers
+// **Save data to Firebase**
 const saveToFirebase = async (collection, userEmail, data) => {
-  if (!userEmail)
-    throw new Error("User email is required for Firestore operations.");
+  if (!userEmail) {
+    throw new Error("❌ User email is required for Firestore operations.");
+  }
+
   try {
     await setDoc(doc(db, collection, userEmail), data);
+    console.log(`✅ Data saved to ${collection} for:`, userEmail);
   } catch (error) {
-    console.error(`Error saving to ${collection}:`, error.message);
+    console.error(`🔥 Error saving to ${collection}:`, error.message);
+    throw error;
   }
 };
 
+// **Load data from Firebase**
 const loadFromFirebase = async (collection, userEmail) => {
-  if (!userEmail)
-    throw new Error("User email is required for Firestore operations.");
+  if (!userEmail) {
+    throw new Error("❌ User email is required for Firestore operations.");
+  }
+
   try {
     const docRef = doc(db, collection, userEmail);
     const docSnap = await getDoc(docRef);
-    return docSnap.exists() ? docSnap.data() : null;
+
+    if (docSnap.exists()) {
+      console.log(
+        `📦 Data loaded from ${collection} for:`,
+
+        userEmail,
+        docSnap.data()
+      );
+      return docSnap.data();
+    } else {
+      console.log(`🔍 No data found in ${collection} for:`, userEmail);
+      return null;
+    }
   } catch (error) {
-    console.error(`Error loading from ${collection}:`, error.message);
-    return null;
+    console.error(`🔥 Error loading from ${collection}:`, error.message);
+    throw error;
   }
 };
 
 // Save/Load Cart
 const saveCartToFirebase = async (userEmail, cart) =>
   saveToFirebase("carts", userEmail, { cart });
+
 const loadCartFromFirebase = async (userEmail) => {
   const data = await loadFromFirebase("carts", userEmail);
   return data ? data.cart : [];
 };
 
 // Save/Load Favorites
-const saveFavoritesToFirebase = async (userEmail, favorites) => {
-  try {
-    console.log("Saving favorites to Firebase:", favorites);
-    await setDoc(doc(db, "favorites", userEmail), { favorites });
-  } catch (error) {
-    console.error("Error saving favorites to Firebase:", error.message);
-  }
-};
+const saveFavoritesToFirebase = async (userEmail, favorites) =>
+  saveToFirebase("favorites", userEmail, { favorites });
 
 const loadFavoritesFromFirebase = async (userEmail) => {
-  try {
-    const docRef = doc(db, "favorites", userEmail);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      console.log("Favorites loaded from Firebase:", docSnap.data().favorites);
-      return docSnap.data().favorites;
-    } else {
-      console.log("No favorites found for:", userEmail);
-      return [];
-    }
-  } catch (error) {
-    console.error("Error loading favorites from Firebase:", error.message);
-    throw error;
-  }
+  const data = await loadFromFirebase("favorites", userEmail);
+  return data ? data.favorites : [];
 };
+
 export {
   auth,
   db,

@@ -23,13 +23,11 @@ const Checkout = () => {
   const dispatch = useDispatch();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [totalAmount, setTotalAmount] = useState(0);
   const [convertedAmount, setConvertedAmount] = useState(0);
   const [currency, setCurrency] = useState("USD");
   const [exchangeRates, setExchangeRates] = useState({});
   const [open, setOpen] = useState(false);
 
-  // Fetch exchange rates on component mount
   useEffect(() => {
     const fetchExchangeRates = async () => {
       try {
@@ -39,30 +37,29 @@ const Checkout = () => {
         setExchangeRates(response.data.rates);
       } catch (error) {
         console.error("Error fetching exchange rates:", error);
+        setExchangeRates({ USD: 1 });
       }
     };
 
     fetchExchangeRates();
   }, []);
 
-  // Calculate total amount
   useEffect(() => {
-    let total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    setTotalAmount(total);
+    const total = cart.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
     setConvertedAmount(total * (exchangeRates[currency] || 1));
   }, [cart, exchangeRates, currency]);
 
-  // Handle currency conversion
-  const handleCurrencyChange = (event) => {
-    setCurrency(event.target.value);
-    setConvertedAmount(totalAmount * (exchangeRates[event.target.value] || 1));
-  };
-
-  // Handle payment success and cart clearing
   const handlePayment = () => {
+    if (cart.length === 0) {
+      alert("Your cart is empty. Add items to proceed.");
+      return;
+    }
+
     setOpen(true);
 
-    // ✅ Clear the cart in Redux and Firebase
     if (user) {
       dispatch(clearCart(user.email));
     }
@@ -92,37 +89,26 @@ const Checkout = () => {
           Your cart is empty.
         </Typography>
       ) : (
-        <Card
-          sx={{
-            padding: 3,
-            borderRadius: 4,
-            boxShadow: 3,
-            backgroundColor: "#FFFFFF",
-          }}
-        >
+        <Card sx={{ padding: 3, borderRadius: 4, boxShadow: 3 }}>
           <CardContent>
-            <Typography variant="h6" sx={{ color: "#6E6E73", marginBottom: 1 }}>
-              Total Amount to Pay:
+            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+              Total Amount:
             </Typography>
             <Typography
               variant="h4"
-              sx={{ fontWeight: "bold", color: "#0071E3", marginBottom: 3 }}
+              sx={{ fontWeight: "bold", marginBottom: 3 }}
             >
               {convertedAmount.toFixed(2)} {currency}
             </Typography>
 
-            <Typography variant="h6" sx={{ color: "#6E6E73", marginBottom: 1 }}>
-              Convert Currency:
+            <Typography variant="h6" sx={{ marginBottom: 2 }}>
+              Select Currency:
             </Typography>
             <Select
               value={currency}
-              onChange={handleCurrencyChange}
+              onChange={(e) => setCurrency(e.target.value)}
               fullWidth
-              sx={{
-                backgroundColor: "#F5F5F7",
-                borderRadius: "8px",
-                marginBottom: 3,
-              }}
+              sx={{ marginBottom: 3 }}
             >
               {Object.keys(exchangeRates).map((cur) => (
                 <MenuItem key={cur} value={cur}>
@@ -139,21 +125,17 @@ const Checkout = () => {
                 color: "white",
                 fontSize: "16px",
                 fontWeight: "bold",
-                borderRadius: "8px",
-                paddingY: 1.5,
-                ":hover": {
-                  backgroundColor: "#005BB5",
-                },
+                ":hover": { backgroundColor: "#005BB5" },
               }}
               onClick={handlePayment}
             >
-              Pay
+              Pay Now
             </Button>
           </CardContent>
         </Card>
       )}
 
-      {/* ✅ Payment Success Dialog */}
+      {/* Payment Success Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle
           sx={{ fontWeight: "bold", color: "#0071E3", textAlign: "center" }}
@@ -161,25 +143,17 @@ const Checkout = () => {
           Payment Successful 🎉
         </DialogTitle>
         <DialogContent>
-          <Typography
-            variant="body1"
-            sx={{ color: "#1D1D1F", textAlign: "center" }}
-          >
+          <Typography variant="body1" align="center">
             Thank you for your purchase!
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: "center", paddingBottom: 3 }}>
+        <DialogActions sx={{ justifyContent: "center" }}>
           <Button
             onClick={() => navigate("/")}
             sx={{
               backgroundColor: "#0071E3",
               color: "white",
-              fontWeight: "bold",
-              borderRadius: "8px",
-              paddingX: 3,
-              ":hover": {
-                backgroundColor: "#005BB5",
-              },
+              ":hover": { backgroundColor: "#005BB5" },
             }}
           >
             Close
