@@ -8,7 +8,7 @@ import { auth } from "../firebaseConfig";
 
 export const AuthContext = createContext();
 
-const SESSION_TIMEOUT = 1 * 60 * 1000; // 1 minutes in milliseconds
+const SESSION_TIMEOUT = 5 * 60 * 1000; // 1 minutes in milliseconds
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {

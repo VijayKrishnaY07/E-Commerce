@@ -33,12 +33,22 @@ const Products = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ marginTop: 8, paddingBottom: 5 }}>
+    <Container
+      maxWidth="lg"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh", // Full viewport height
+        padding: 5,
+        textAlign: "center",
+      }}
+    >
       <Typography
         variant="h4"
-        align="center"
         gutterBottom
-        sx={{ fontWeight: "bold", color: "#1D1D1F" }}
+        sx={{ fontWeight: "bold", color: "#1D1D1F", marginBottom: 4 }}
       >
         Apple Products
       </Typography>
@@ -47,7 +57,7 @@ const Products = () => {
         sx={{
           display: "flex",
           flexWrap: "wrap",
-          gap: 3,
+          gap: 4,
           justifyContent: "center",
         }}
       >
@@ -55,11 +65,16 @@ const Products = () => {
           <Card
             key={product.id}
             sx={{
-              width: 300,
-              boxShadow: 3,
-              borderRadius: 4,
+              width: 350, // Increased width for larger cards
+              boxShadow: 4,
+              borderRadius: 6,
               overflow: "hidden",
               position: "relative",
+              transition: "transform 0.3s ease", // Add hover effect
+              ":hover": {
+                transform: "scale(1.05)", // Slight zoom on hover
+                boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
+              },
             }}
           >
             {/* Favorite Icon */}
@@ -67,8 +82,8 @@ const Products = () => {
               onClick={() => handleToggleFavorite(product)}
               sx={{
                 position: "absolute",
-                top: 10,
-                left: 10,
+                top: 15,
+                right: 15,
                 backgroundColor: "white",
                 ":hover": { backgroundColor: "#F5F5F5" },
               }}
@@ -89,7 +104,11 @@ const Products = () => {
                 component="img"
                 image={product.image}
                 alt={product.name}
-                sx={{ height: 200, objectFit: "contain" }}
+                sx={{
+                  height: 250, // Increased height for larger image
+                  objectFit: "contain",
+                  backgroundColor: "#F9F9F9", // Light background for image area
+                }}
               />
             </Link>
 

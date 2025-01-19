@@ -7,14 +7,15 @@ import {
   Container,
   Typography,
   Button,
-  List,
-  ListItem,
-  Divider,
-  TextField,
   Card,
   CardMedia,
+  CardContent,
+  TextField,
+  IconButton,
   Box,
+  Divider,
 } from "@mui/material";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -23,172 +24,249 @@ const Cart = () => {
 
   if (!user) {
     return (
-      <Container maxWidth="sm" sx={{ paddingY: 5, textAlign: "center" }}>
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          backgroundColor: "rgba(240, 240, 240, 0.8)",
+        }}
+      >
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#1D1D1F" }}>
           Shopping Cart
         </Typography>
-        <Typography variant="body1" sx={{ color: "#6E6E73" }}>
+        <Typography variant="body1" sx={{ color: "#6E6E73", marginTop: 2 }}>
           Please log in to view your cart.
         </Typography>
-      </Container>
+      </Box>
     );
   }
 
   // Calculate Total Price
-  const totalPrice = cart.reduce((acc, item) => {
-    const itemTotal = item.price ? item.price * item.quantity : 0;
-    return acc + itemTotal;
-  }, 0);
+  const totalPrice = cart.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+  // Calculate GST and CGST
+  const gst = (totalPrice * 0.12).toFixed(2);
+  const cgst = (totalPrice * 0.18).toFixed(2);
+  const grandTotal = (totalPrice + parseFloat(gst) + parseFloat(cgst)).toFixed(
+    2
+  );
 
   return (
-    <Container maxWidth="md" sx={{ marginTop: 8, paddingBottom: 5 }}>
-      <Typography
-        variant="h4"
-        align="center"
-        gutterBottom
-        sx={{ fontWeight: "bold", color: "#1D1D1F" }}
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(240, 240, 240, 0.8)",
+        padding: { xs: 2, md: 4 },
+      }}
+    >
+      <Container
+        maxWidth="lg"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "white",
+          borderRadius: 4,
+          boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
+          zIndex: 10,
+          padding: { xs: 2, md: 4 },
+          width: "100%",
+          height: "auto", // Adjust height based on content
+        }}
       >
-        Shopping Cart
-      </Typography>
-
-      {cart.length === 0 ? (
+        {/* Centered Heading */}
         <Typography
-          variant="body1"
+          variant="h5"
           align="center"
-          sx={{ color: "#6E6E73", marginTop: 3 }}
+          sx={{
+            fontWeight: "bold",
+            marginBottom: 3,
+            borderBottom: "1px solid #E0E0E0",
+            paddingBottom: 2,
+          }}
         >
-          Your cart is empty.
+          Your Cart
         </Typography>
-      ) : (
-        <>
-          <List>
+
+        {/* Content Container: Left and Right Sections */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            gap: 4,
+            height: "100%",
+            marginTop: 2,
+          }}
+        >
+          {/* Left Side: Cart Items */}
+          <Box
+            sx={{
+              flex: 2,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              border: "1px solid #E0E0E0",
+              borderRadius: 4,
+              overflowY: "auto",
+              padding: 2,
+              maxHeight: "500px", // Prevent overflow on smaller screens
+              width: "100%",
+            }}
+          >
             {cart.map((product) => (
-              <React.Fragment key={product.id}>
-                <ListItem sx={{ justifyContent: "center" }}>
-                  <Card
-                    sx={{
-                      display: "flex",
-                      flexDirection: { xs: "column", sm: "row" },
-                      alignItems: "center",
-                      width: "100%",
-                      padding: 2,
-                      boxShadow: 3,
-                      borderRadius: 4,
-                      backgroundColor: "#FFFFFF",
-                    }}
+              <Card
+                key={product.id}
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  alignItems: "center",
+                  gap: 2,
+                  padding: 2,
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  sx={{
+                    width: { xs: "100%", sm: 100 },
+                    height: { xs: "auto", sm: 100 },
+                    objectFit: "contain",
+                  }}
+                  image={product.image || "/assets/images/placeholder.jpg"} // Placeholder for missing images
+                  alt={product.name || "Unnamed Product"}
+                />
+                <CardContent sx={{ flex: 1, paddingX: { xs: 0, sm: 2 } }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: "bold", color: "#1D1D1F" }}
                   >
-                    <CardMedia
-                      component="img"
-                      sx={{
-                        width: { xs: "100%", sm: 100 },
-                        height: { xs: "auto", sm: 100 },
-                        objectFit: "contain",
-                        borderRadius: 3,
-                      }}
-                      image={product.image || "/assets/images/placeholder.jpg"} // Placeholder for missing images
-                      alt={product.name || "Unnamed Product"}
-                    />
+                    {product.name || "Unnamed Product"}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#6E6E73", marginBottom: 1 }}
+                  >
+                    ${product.price ? product.price : "N/A"} x{" "}
+                    {product.quantity}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: "bold", color: "#0071E3" }}
+                  >
+                    Total: $
+                    {product.price
+                      ? (product.price * product.quantity).toFixed(2)
+                      : "0.00"}
+                  </Typography>
+                </CardContent>
 
-                    <Box
-                      sx={{
-                        flexGrow: 1,
-                        paddingX: 3,
-                        textAlign: { xs: "center", sm: "left" },
-                      }}
-                    >
-                      <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", color: "#1D1D1F" }}
-                      >
-                        {product.name || "Unnamed Product"}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{ color: "#6E6E73", marginBottom: 1 }}
-                      >
-                        ${product.price ? product.price : "N/A"} x{" "}
-                        {product.quantity}
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", color: "#0071E3" }}
-                      >
-                        Total: $
-                        {product.price
-                          ? (product.price * product.quantity).toFixed(2)
-                          : "0.00"}
-                      </Typography>
-                    </Box>
-
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 2,
-                        flexDirection: { xs: "column", sm: "row" },
-                      }}
-                    >
-                      <TextField
-                        type="number"
-                        value={product.quantity}
-                        onChange={(e) => {
-                          const newQuantity = Math.max(
-                            1,
-                            Number(e.target.value)
-                          );
-                          dispatch(
-                            updateCartQuantity({
-                              userEmail: user.email,
-                              productId: product.id,
-                              quantity: newQuantity,
-                            })
-                          );
-                        }}
-                        sx={{
-                          width: "60px",
-                          "& input": {
-                            textAlign: "center",
-                            fontSize: "16px",
-                            fontWeight: "bold",
-                          },
-                        }}
-                      />
-                      <Button
-                        variant="outlined"
-                        sx={{
-                          borderColor: "#FF3B30",
-                          color: "#FF3B30",
-                          fontWeight: "bold",
-                          ":hover": {
-                            backgroundColor: "#FF3B30",
-                            color: "white",
-                          },
-                        }}
-                        onClick={() => {
-                          dispatch(
-                            removeFromCart({
-                              userEmail: user.email,
-                              productId: product.id,
-                            })
-                          );
-                        }}
-                      >
-                        Remove
-                      </Button>
-                    </Box>
-                  </Card>
-                </ListItem>
-                <Divider />
-              </React.Fragment>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <TextField
+                    type="number"
+                    value={product.quantity}
+                    onChange={(e) => {
+                      const newQuantity = Math.max(1, Number(e.target.value));
+                      dispatch(
+                        updateCartQuantity({
+                          userEmail: user.email,
+                          productId: product.id,
+                          quantity: newQuantity,
+                        })
+                      );
+                    }}
+                    sx={{
+                      width: "60px",
+                      "& input": {
+                        textAlign: "center",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                      },
+                    }}
+                  />
+                  <IconButton
+                    sx={{ color: "gray" }}
+                    onClick={() =>
+                      dispatch(
+                        removeFromCart({
+                          userEmail: user.email,
+                          productId: product.id,
+                        })
+                      )
+                    }
+                  >
+                    <DeleteOutlinedIcon />
+                  </IconButton>
+                </Box>
+              </Card>
             ))}
-          </List>
+          </Box>
 
-          <Box sx={{ textAlign: "center", marginTop: 4 }}>
+          {/* Right Side: Total, Taxes, and Checkout */}
+          <Box
+            sx={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              border: "1px solid #E0E0E0",
+              borderRadius: 4,
+              padding: { xs: 2, sm: 3 },
+              backgroundColor: "#F9F9F9",
+              boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
+              width: "100%",
+              maxWidth: "400px", // Limit right-side width for better layout
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: "bold",
+                color: "#1D1D1F",
+                marginBottom: 2,
+                textAlign: "center",
+              }}
+            >
+              Subtotal: ${totalPrice.toFixed(2)}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: "#6E6E73",
+                marginBottom: 1,
+                textAlign: "center",
+              }}
+            >
+              GST (12%): ${gst}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: "#6E6E73",
+                marginBottom: 3,
+                textAlign: "center",
+              }}
+            >
+              CGST (18%): ${cgst}
+            </Typography>
+            <Divider sx={{ width: "100%", marginBottom: 3 }} />
             <Typography
               variant="h5"
-              sx={{ fontWeight: "bold", color: "#1D1D1F" }}
+              sx={{
+                fontWeight: "bold",
+                color: "#0071E3",
+                marginBottom: 3,
+                textAlign: "center",
+              }}
             >
-              Total: ${totalPrice.toFixed(2)}
+              Grand Total: ${grandTotal}
             </Typography>
             <Button
               component={Link}
@@ -201,18 +279,18 @@ const Cart = () => {
                 fontWeight: "bold",
                 borderRadius: "8px",
                 paddingY: 1.5,
-                marginTop: 2,
+                width: "100%",
                 ":hover": {
                   backgroundColor: "#005BB5",
                 },
               }}
             >
-              Proceed to Checkout
+              Proceed to Payment
             </Button>
           </Box>
-        </>
-      )}
-    </Container>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 
