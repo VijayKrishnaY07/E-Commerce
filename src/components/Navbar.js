@@ -26,7 +26,13 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: "#0071E3", boxShadow: 0 }}>
+    <AppBar
+      position="fixed"
+      sx={{
+        backgroundColor: "#000000", // Apple's iPhone page uses a black header
+        boxShadow: 0,
+      }}
+    >
       <Container maxWidth="lg">
         <Toolbar
           sx={{
@@ -39,7 +45,11 @@ const Navbar = () => {
           {/* Store Name */}
           <Typography
             variant="h6"
-            sx={{ fontWeight: "bold", color: "white", letterSpacing: "0.8px" }}
+            sx={{
+              fontWeight: "bold",
+              color: "#FFFFFF", // White text on black background
+              letterSpacing: "0.8px",
+            }}
           >
             Tech Gadgets Store
           </Typography>
@@ -54,28 +64,42 @@ const Navbar = () => {
             }}
           >
             <Button
-              color="inherit"
               component={Link}
               to="/"
-              sx={{ fontSize: "1rem", fontWeight: 500 }}
+              sx={{
+                fontSize: "1rem",
+                fontWeight: 500,
+                color: "#FFFFFF", // White links
+                ":hover": { color: "#A1A1A6" }, // Light gray hover
+              }}
             >
               Home
             </Button>
             <Button
-              color="inherit"
               component={Link}
               to="/products"
-              sx={{ fontSize: "1rem", fontWeight: 500 }}
+              sx={{
+                fontSize: "1rem",
+                fontWeight: 500,
+                color: "#FFFFFF",
+                ":hover": { color: "#A1A1A6" },
+              }}
             >
               Products
             </Button>
             {user && (
               <>
                 <Button
-                  color="inherit"
                   component={Link}
                   to="/favorites"
-                  sx={{ fontSize: "1rem", fontWeight: 500 }}
+                  sx={{
+                    fontSize: "1rem",
+                    fontWeight: 500,
+                    color: "#FFFFFF",
+                    display: "flex",
+                    alignItems: "center",
+                    ":hover": { color: "#A1A1A6" },
+                  }}
                 >
                   <FavoriteOutlinedIcon
                     sx={{ fontSize: "1.2rem", marginRight: "5px" }}
@@ -83,10 +107,16 @@ const Navbar = () => {
                   Favorites ({favorites.length})
                 </Button>
                 <Button
-                  color="inherit"
                   component={Link}
                   to="/cart"
-                  sx={{ fontSize: "1rem", fontWeight: 500 }}
+                  sx={{
+                    fontSize: "1rem",
+                    fontWeight: 500,
+                    color: "#FFFFFF",
+                    display: "flex",
+                    alignItems: "center",
+                    ":hover": { color: "#A1A1A6" },
+                  }}
                 >
                   <ShoppingBagOutlinedIcon
                     sx={{ fontSize: "1.2rem", marginRight: "5px" }}
@@ -105,24 +135,33 @@ const Navbar = () => {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
+                    color: "#FFFFFF", // White text for user name
                   }}
                 >
                   {user.name}
                 </Typography>
                 <Button
-                  color="inherit"
                   onClick={handleLogout}
-                  sx={{ fontSize: "1rem", fontWeight: 500 }}
+                  sx={{
+                    fontSize: "1rem",
+                    fontWeight: 500,
+                    color: "#FF3B30", // Apple's red for sign-out (close buttons)
+                    ":hover": { color: "#C22C21" }, // Darker red on hover
+                  }}
                 >
                   Signout
                 </Button>
               </>
             ) : (
               <Button
-                color="inherit"
                 component={Link}
                 to="/signin"
-                sx={{ fontSize: "1rem", fontWeight: 500 }}
+                sx={{
+                  fontSize: "1rem",
+                  fontWeight: 500,
+                  color: "#FFFFFF",
+                  ":hover": { color: "#A1A1A6" },
+                }}
               >
                 Signin
               </Button>

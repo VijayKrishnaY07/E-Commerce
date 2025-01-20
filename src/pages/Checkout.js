@@ -215,6 +215,14 @@ const Checkout = () => {
           onClose={() => setOpen(false)}
           maxWidth="sm"
           fullWidth
+          PaperProps={{
+            sx: {
+              padding: { xs: 2, md: 4 },
+              borderRadius: 3,
+              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
+              backgroundColor: "white",
+            },
+          }}
         >
           <DialogTitle
             sx={{
@@ -233,7 +241,6 @@ const Checkout = () => {
           <DialogContent
             sx={{
               textAlign: "center",
-              padding: { xs: 2, md: 4 },
               backgroundColor: "#F9F9F9",
             }}
           >

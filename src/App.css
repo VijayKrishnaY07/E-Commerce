@@ -1,35 +1,33 @@
-@import url("https://fonts.cdn.apple.com/fonts/SFProDisplay-Regular.woff2");
-
-/* ✅ Global Styles */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica,
-    Arial, sans-serif;
-  background-color: #f5f5f7;
-  color: #1d1d1f;
-  margin: 0;
-  padding: 0;
-}
+/* ✅ Global Component-Specific Styles */
 
 /* ✅ Make sure navbar doesn’t overlap content */
 body {
-  padding-top: 80px;
+  padding-top: 80px; /* Prevent navbar from overlapping content */
 }
 
-/* ✅ Minimal Global Styles (Component-Specific Styles Moved to JS Files) */
-button {
-  font-family: inherit;
-}
-
+/* ✅ Minimal Global Styles */
 input,
 textarea {
-  font-family: inherit;
   border-radius: 8px;
-  border: 1px solid #d1d1d6;
+  border: 1px solid #d1d1d6; /* Apple light grey border */
   padding: 12px;
 }
 
-@media screen and (max-width: 768px) {
-  body {
-    font-size: 14px;
-  }
+/* ✅ Smooth Button Styles */
+button {
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.02); /* Subtle hover effect for buttons */
+}
+
+/* ✅ Ensure consistent font scaling */
+button,
+input,
+textarea {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica,
+    Arial, sans-serif;
 }

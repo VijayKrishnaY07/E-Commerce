@@ -4,11 +4,11 @@ import { object, string } from "yup";
 import {
   TextField,
   Button,
-  Container,
   Typography,
   CircularProgress,
   Card,
   CardContent,
+  Box,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, signInWithGoogle } from "../firebaseConfig";
@@ -49,21 +49,22 @@ const Signin = () => {
   };
 
   return (
-    <Container
+    <Box
       sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
+        backgroundColor: "#F0F0F5", // Greyish background
       }}
     >
       <Card
         sx={{
           width: 400,
           padding: 4,
-          boxShadow: 3,
+          boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
           borderRadius: "12px",
-          backgroundColor: "#E4E4E6", // Apple Light Silver
+          backgroundColor: "#FFFFFF", // White card
         }}
       >
         <CardContent>
@@ -111,7 +112,7 @@ const Signin = () => {
                   type="submit"
                   variant="contained"
                   sx={{
-                    backgroundColor: "#0071E3", // Apple Blue
+                    backgroundColor: "#0071E3",
                     color: "white",
                     fontSize: "16px",
                     fontWeight: "bold",
@@ -130,19 +131,32 @@ const Signin = () => {
                   variant="outlined"
                   sx={{
                     marginTop: 2,
-                    borderColor: "#0071E3",
-                    color: "#0071E3",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderColor: "#D1D1D6",
+                    color: "#1D1D1F",
                     fontSize: "16px",
                     fontWeight: "bold",
                     borderRadius: "8px",
                     padding: "12px",
                     ":hover": {
-                      backgroundColor: "#E4E4E6",
+                      backgroundColor: "#F5F5F7",
                     },
                   }}
                   onClick={handleGoogleSignIn}
                 >
-                  Sign in with Google
+                  <Box
+                    component="img"
+                    src="https://www.gstatic.com/images/branding/product/1x/googleg_48dp.png"
+                    alt="Google Logo"
+                    sx={{
+                      width: "24px",
+                      height: "24px",
+                      marginRight: 2,
+                    }}
+                  />
+                  Continue with Google
                 </Button>
               </Form>
             )}
@@ -152,7 +166,7 @@ const Signin = () => {
           </Typography>
         </CardContent>
       </Card>
-    </Container>
+    </Box>
   );
 };
 

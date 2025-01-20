@@ -1,11 +1,42 @@
 @import url("https://fonts.cdn.apple.com/fonts/SFProDisplay-Regular.woff2");
 
+/* ✅ Global Reset for Consistency */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ✅ Body Styles */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica,
     Arial, sans-serif;
-  background-color: #f5f5f7;
-  color: #1d1d1f;
+  background-color: #f5f5f7; /* Light greyish Apple background */
+  color: #1d1d1f; /* Apple dark text color */
+  line-height: 1.6; /* Improve readability */
+  scroll-behavior: smooth; /* Smooth scrolling for better UX */
 }
-html {
-  scroll-behavior: smooth;
+
+/* ✅ Button and Input Defaults */
+button,
+input,
+textarea {
+  font-family: inherit; /* Consistent font across elements */
+  border: none;
+  outline: none;
+}
+
+/* ✅ Accessible Focus */
+button:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid #0071e3; /* Apple blue focus for accessibility */
+  outline-offset: 2px;
+}
+
+/* ✅ Mobile Optimization */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 14px; /* Adjust font size for smaller devices */
+  }
 }

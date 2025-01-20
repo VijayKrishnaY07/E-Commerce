@@ -8,7 +8,6 @@ import {
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 // Firebase Configuration
-
 const firebaseConfig = {
   apiKey: "xxx",
   authDomain: "xxx",

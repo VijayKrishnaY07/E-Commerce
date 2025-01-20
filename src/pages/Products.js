@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import products from "../data/products";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "../redux/favoriteSlice";
@@ -10,26 +10,37 @@ import {
   CardMedia,
   IconButton,
   Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { AuthContext } from "../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Products = () => {
   const dispatch = useDispatch();
   const { user } = useContext(AuthContext);
   const favorites = useSelector((state) => state.favorites);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   const isFavorite = (productId) =>
     favorites && favorites.some((item) => item?.id === productId);
 
   const handleToggleFavorite = (product) => {
     if (!user || !user.email) {
-      alert("Please sign in to add items to favorites.");
+      setDialogOpen(true);
       return;
     }
     dispatch(toggleFavorite({ userEmail: user.email, product }));
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   return (
@@ -40,7 +51,7 @@ const Products = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "100vh", // Full viewport height
+        height: "100vh",
         padding: 5,
         textAlign: "center",
       }}
@@ -65,15 +76,15 @@ const Products = () => {
           <Card
             key={product.id}
             sx={{
-              width: 350, // Increased width for larger cards
+              width: 350,
               boxShadow: 4,
               borderRadius: 6,
               overflow: "hidden",
               position: "relative",
-              transition: "transform 0.3s ease", // Add hover effect
+              transition: "transform 0.3s ease",
               ":hover": {
-                transform: "scale(1.05)", // Slight zoom on hover
-                boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
+                transform: "scale(1.05)",
+                boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
               },
             }}
           >
@@ -105,9 +116,9 @@ const Products = () => {
                 image={product.image}
                 alt={product.name}
                 sx={{
-                  height: 250, // Increased height for larger image
+                  height: 250,
                   objectFit: "contain",
-                  backgroundColor: "#F9F9F9", // Light background for image area
+                  backgroundColor: "#F9F9F9",
                 }}
               />
             </Link>
@@ -131,6 +142,62 @@ const Products = () => {
           </Card>
         ))}
       </Box>
+
+      {/* Dialog for Sign-In Prompt */}
+      <Dialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            padding: 2,
+            boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            fontWeight: "bold",
+            textAlign: "center",
+            color: "#1D1D1F",
+          }}
+        >
+          Sign In Required
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: "center", marginBottom: 2 }}>
+          <Typography variant="body1" sx={{ color: "#6E6E73" }}>
+            Please sign in to add items to your favorites.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
+          <Button
+            onClick={handleDialogClose}
+            sx={{
+              backgroundColor: "#E4E4E6",
+              color: "#1D1D1F",
+              ":hover": { backgroundColor: "#D1D1D6" },
+              paddingX: 4,
+              borderRadius: 2,
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => navigate("/signin")}
+            sx={{
+              backgroundColor: "#0071E3",
+              color: "white",
+              ":hover": { backgroundColor: "#005BB5" },
+              paddingX: 4,
+              borderRadius: 2,
+            }}
+          >
+            Sign In
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

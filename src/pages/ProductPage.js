@@ -23,13 +23,19 @@ const ProductPage = () => {
 
   if (!product) {
     return (
-      <Typography
-        variant="h5"
-        align="center"
-        sx={{ marginTop: "50px", color: "#1D1D1F" }}
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#F0F0F5",
+        }}
       >
-        Product not found
-      </Typography>
+        <Typography variant="h5" sx={{ fontWeight: "bold", color: "#1D1D1F" }}>
+          Product not found
+        </Typography>
+      </Box>
     );
   }
 
@@ -44,75 +50,104 @@ const ProductPage = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ marginTop: 10, paddingBottom: 5 }}>
-      <Card
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#F5F5F7",
+        padding: { xs: 2, md: 4 },
+      }}
+    >
+      <Container
+        maxWidth="md"
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
+          flexDirection: "column",
+          justifyContent: "center",
           alignItems: "center",
-          boxShadow: 3,
+          backgroundColor: "white",
           borderRadius: 4,
-          padding: 4,
-          backgroundColor: "#FFFFFF",
+          boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
+          padding: { xs: 3, md: 4 },
         }}
       >
-        <CardMedia
-          component="img"
-          image={product.image}
-          alt={product.name}
+        <Card
           sx={{
-            width: { xs: "100%", md: "50%" },
-            height: { xs: "auto", md: "400px" },
-            objectFit: "contain",
-            borderRadius: 3,
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: "center",
+            boxShadow: 0,
+            borderRadius: 4,
+            backgroundColor: "transparent",
           }}
-        />
-        <Box sx={{ flex: 1, paddingX: { xs: 0, md: 4 }, textAlign: "left" }}>
-          <Typography
-            variant="body2"
-            sx={{ fontWeight: "bold", color: "#FF3B30", marginBottom: 1 }}
-          >
-            New
-          </Typography>
-          <Typography
-            variant="h4"
-            sx={{ fontWeight: "bold", color: "#1D1D1F", marginBottom: 2 }}
-          >
-            {product.name}
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ color: "#6E6E73", marginBottom: 3 }}
-          >
-            {product.description}
-          </Typography>
-          <Typography
-            variant="h5"
-            sx={{ fontWeight: "bold", color: "#0071E3", marginBottom: 3 }}
-          >
-            ${product.price}
-          </Typography>
-          <Button
-            variant="contained"
-            fullWidth
+        >
+          <CardMedia
+            component="img"
+            image={product.image}
+            alt={product.name}
             sx={{
-              backgroundColor: "#0071E3",
-              color: "white",
-              fontSize: "16px",
-              fontWeight: "bold",
-              borderRadius: "8px",
-              paddingY: 1.5,
-              ":hover": {
-                backgroundColor: "#005BB5",
-              },
+              width: { xs: "100%", md: "50%" },
+              height: { xs: "auto", md: "400px" },
+              objectFit: "contain",
+              borderRadius: 3,
             }}
-            onClick={handleAddToCart}
+          />
+          <Box
+            sx={{
+              flex: 1,
+              paddingX: { xs: 0, md: 4 },
+              textAlign: "left",
+              marginTop: { xs: 2, md: 0 },
+            }}
           >
-            Add to Cart
-          </Button>
-        </Box>
-      </Card>
-    </Container>
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: "bold", color: "#FF3B30", marginBottom: 1 }}
+            >
+              New
+            </Typography>
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: "bold", color: "#1D1D1F", marginBottom: 2 }}
+            >
+              {product.name}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ color: "#6E6E73", marginBottom: 3 }}
+            >
+              {product.description}
+            </Typography>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", color: "#0071E3", marginBottom: 3 }}
+            >
+              ${product.price}
+            </Typography>
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{
+                backgroundColor: "#0071E3",
+                color: "white",
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "8px",
+                paddingY: 1.5,
+                ":hover": {
+                  backgroundColor: "#005BB5",
+                },
+              }}
+              onClick={handleAddToCart}
+            >
+              Add to Cart
+            </Button>
+          </Box>
+        </Card>
+      </Container>
+    </Box>
   );
 };
 

@@ -4,11 +4,11 @@ import { object, string } from "yup";
 import {
   TextField,
   Button,
-  Container,
   Typography,
   CircularProgress,
   Card,
   CardContent,
+  Box,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebaseConfig";
@@ -47,21 +47,22 @@ const Signup = () => {
   };
 
   return (
-    <Container
+    <Box
       sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
+        backgroundColor: "#F0F0F5", // Greyish background
       }}
     >
       <Card
         sx={{
           width: 400,
           padding: 4,
-          boxShadow: 3,
+          boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
           borderRadius: "12px",
-          backgroundColor: "#E4E4E6",
+          backgroundColor: "#FFFFFF", // White card
         }}
       >
         <CardContent>
@@ -140,7 +141,7 @@ const Signup = () => {
           </Typography>
         </CardContent>
       </Card>
-    </Container>
+    </Box>
   );
 };
 
