@@ -30,7 +30,6 @@ const Home = () => {
         minHeight: "100vh",
         position: "relative",
         overflow: "hidden",
-        backgroundColor: "#F5F5F7",
       }}
     >
       {/* Background Cover Photo */}
@@ -56,7 +55,7 @@ const Home = () => {
             justifyContent: "center",
             alignItems: "center",
             height: "100vh",
-            backgroundColor: "#000", // Black background for the video
+            backgroundColor: "#000",
           }}
         >
           {/* YouTube Embedded Video */}
@@ -83,53 +82,78 @@ const Home = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
             height: "100vh",
             textAlign: "center",
-            color: "#1D1D1F",
-            padding: { xs: 2, md: 4 },
+            color: "#000",
+            zIndex: 1,
+            paddingTop: { xs: 4, md: 8 },
+            paddingBottom: { xs: 4, md: 8 },
           }}
         >
-          {/* Hero Section */}
-          <Typography
-            variant="h2"
+          {/* Welcome Text - Positioned on top of the Apple logo */}
+          <Box
             sx={{
-              fontWeight: "bold",
-              color: "#1D1D1F",
-              textShadow: "0px 4px 6px rgba(0,0,0,0.2)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: { xs: 8, md: 12 },
             }}
           >
-            Welcome to Tech Gadgets Store
-          </Typography>
-          <Typography
-            variant="h5"
-            sx={{
-              color: "#6E6E73",
-              marginTop: 2,
-              maxWidth: "600px",
-              textShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-            }}
-          >
-            Discover the latest Apple products at unbeatable prices. Upgrade
-            your tech today!
-          </Typography>
+            <Typography
+              variant="h2"
+              sx={{
+                fontWeight: "bold",
 
-          {/* CTA Buttons */}
-          <Box sx={{ marginTop: 4 }}>
+                marginBottom: 0.1,
+                lineHeight: 1.2,
+                maxWidth: "800px",
+              }}
+            >
+              Welcome to Apple Store
+            </Typography>
+          </Box>
+
+          {/* Sub Text and Button - Positioned below the Apple logo */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 3,
+              marginTop: { xs: 2, md: 6 },
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{
+                color: "#000",
+
+                maxWidth: "600px",
+                lineHeight: 1.5,
+              }}
+            >
+              Discover the latest Apple products at unbeatable prices.
+            </Typography>
+
             <Button
               component={Link}
               to="/products"
               variant="contained"
               sx={{
-                backgroundColor: "#0071E3",
-                color: "white",
+                backgroundColor: "black",
+                color: "#FFFFFF",
                 fontWeight: "bold",
                 fontSize: "18px",
                 paddingX: 4,
                 paddingY: 1.5,
                 borderRadius: "8px",
-                textTransform: "uppercase",
-                ":hover": { backgroundColor: "#005BB5" },
+                boxShadow: "0px 4px 8px rgba(0,0,0,0.4)",
+                ":hover": {
+                  backgroundColor: "#005BB5",
+                },
               }}
             >
               Shop Now

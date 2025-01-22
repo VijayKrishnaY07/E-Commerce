@@ -28,6 +28,6 @@ button:hover {
 button,
 input,
 textarea {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica,
-    Arial, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
 }

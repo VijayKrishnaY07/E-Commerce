@@ -54,6 +54,7 @@ const Products = () => {
         height: "100vh",
         padding: 5,
         textAlign: "center",
+        backgroundColor: "#fff",
       }}
     >
       <Typography
@@ -135,7 +136,10 @@ const Products = () => {
               >
                 {product.description}
               </Typography>
-              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: "bold", color: "#0066CC" }}
+              >
                 ${product.price}
               </Typography>
             </CardContent>

@@ -4,7 +4,6 @@ import { removeFromCart, updateCartQuantity } from "../redux/cartSlice";
 import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import {
-  Container,
   Typography,
   Button,
   Card,
@@ -16,6 +15,8 @@ import {
   Divider,
 } from "@mui/material";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -31,7 +32,7 @@ const Cart = () => {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
-          backgroundColor: "rgba(240, 240, 240, 0.8)",
+          backgroundColor: "#F5F5F5",
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: "bold", color: "#1D1D1F" }}>
@@ -64,64 +65,48 @@ const Cart = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "rgba(240, 240, 240, 0.8)",
+        backgroundColor: "#F5F5F5",
         padding: { xs: 2, md: 4 },
       }}
     >
-      <Container
-        maxWidth="lg"
+      <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
-          backgroundColor: "white",
-          borderRadius: 4,
-          boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
-          zIndex: 10,
-          padding: { xs: 2, md: 4 },
+          flexDirection: { xs: "column", md: "row" },
+          gap: 4,
+          maxWidth: "1200px",
           width: "100%",
-          height: "auto", // Adjust height based on content
         }}
       >
-        {/* Centered Heading */}
-        <Typography
-          variant="h5"
-          align="center"
-          sx={{
-            fontWeight: "bold",
-            marginBottom: 3,
-            borderBottom: "1px solid #E0E0E0",
-            paddingBottom: 2,
-          }}
-        >
-          Your Cart
-        </Typography>
-
-        {/* Content Container: Left and Right Sections */}
+        {/* Left Side: Cart Items */}
         <Box
           sx={{
+            flex: 2,
             display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            gap: 4,
-            height: "100%",
-            marginTop: 2,
+            flexDirection: "column",
+            gap: 2,
+            borderRadius: 4,
+            backgroundColor: "#F7F7F7",
+            boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.15)",
+            padding: 3,
+            maxHeight: "600px", // Fixed height for "Your Cart" container
+            overflowY: "auto",
+            width: "100%",
           }}
         >
-          {/* Left Side: Cart Items */}
-          <Box
+          <Typography
+            variant="h5"
             sx={{
-              flex: 2,
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              border: "1px solid #E0E0E0",
-              borderRadius: 4,
-              overflowY: "auto",
-              padding: 2,
-              maxHeight: "500px", // Prevent overflow on smaller screens
-              width: "100%",
+              fontWeight: "bold",
+              textAlign: "center",
+              marginBottom: 2,
+              color: "#1D1D1F",
             }}
           >
-            {cart.map((product) => (
+            Your Cart
+          </Typography>
+          {cart.length > 0 ? (
+            cart.map((product) => (
               <Card
                 key={product.id}
                 sx={{
@@ -130,13 +115,14 @@ const Cart = () => {
                   alignItems: "center",
                   gap: 2,
                   padding: 2,
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
                 }}
               >
                 <CardMedia
                   component="img"
                   sx={{
-                    width: { xs: "100%", sm: 100 },
-                    height: { xs: "auto", sm: 100 },
+                    width: { xs: "100%", sm: 80 },
+                    height: { xs: "auto", sm: 80 },
                     objectFit: "contain",
                   }}
                   image={product.image || "/assets/images/placeholder.jpg"} // Placeholder for missing images
@@ -144,8 +130,8 @@ const Cart = () => {
                 />
                 <CardContent sx={{ flex: 1, paddingX: { xs: 0, sm: 2 } }}>
                   <Typography
-                    variant="h6"
-                    sx={{ fontWeight: "bold", color: "#1D1D1F" }}
+                    variant="subtitle1"
+                    sx={{ fontWeight: 500, color: "#1D1D1F" }}
                   >
                     {product.name || "Unnamed Product"}
                   </Typography>
@@ -185,7 +171,7 @@ const Cart = () => {
                       width: "60px",
                       "& input": {
                         textAlign: "center",
-                        fontSize: "16px",
+                        fontSize: "14px",
                         fontWeight: "bold",
                       },
                     }}
@@ -205,91 +191,116 @@ const Cart = () => {
                   </IconButton>
                 </Box>
               </Card>
-            ))}
-          </Box>
+            ))
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+                color: "#A1A1A6",
+              }}
+            >
+              <SentimentDissatisfiedIcon
+                sx={{ fontSize: 50, marginBottom: 1 }}
+              />
+              <Typography variant="body1" sx={{ color: "#6E6E73" }}>
+                Your cart is empty. Add items to get started!
+              </Typography>
+            </Box>
+          )}
+        </Box>
 
-          {/* Right Side: Total, Taxes, and Checkout */}
-          <Box
+        {/* Right Side: Total, Taxes, and Checkout */}
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            border: "1px solid #E0E0E0",
+            borderRadius: 4,
+            padding: { xs: 2, sm: 3 },
+            backgroundColor: "#F7F7F7",
+            boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
+            width: "100%",
+            maxWidth: "400px",
+          }}
+        >
+          <ShoppingCartOutlinedIcon
             sx={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              border: "1px solid #E0E0E0",
-              borderRadius: 4,
-              padding: { xs: 2, sm: 3 },
-              backgroundColor: "#F9F9F9",
-              boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
-              width: "100%",
-              maxWidth: "400px", // Limit right-side width for better layout
+              fontSize: 80,
+              color: "#0071E3",
+              marginBottom: 2,
+            }}
+          />
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "bold",
+              color: "#1D1D1F",
+              marginBottom: 2,
+              textAlign: "center",
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: "bold",
-                color: "#1D1D1F",
-                marginBottom: 2,
-                textAlign: "center",
-              }}
-            >
-              Subtotal: ${totalPrice.toFixed(2)}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                color: "#6E6E73",
-                marginBottom: 1,
-                textAlign: "center",
-              }}
-            >
-              GST (12%): ${gst}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                color: "#6E6E73",
-                marginBottom: 3,
-                textAlign: "center",
-              }}
-            >
-              CGST (18%): ${cgst}
-            </Typography>
-            <Divider sx={{ width: "100%", marginBottom: 3 }} />
-            <Typography
-              variant="h5"
-              sx={{
-                fontWeight: "bold",
-                color: "#0071E3",
-                marginBottom: 3,
-                textAlign: "center",
-              }}
-            >
-              Grand Total: ${grandTotal}
-            </Typography>
-            <Button
-              component={Link}
-              to="/checkout"
-              variant="contained"
-              sx={{
-                backgroundColor: "#0071E3",
-                color: "white",
-                fontSize: "16px",
-                fontWeight: "bold",
-                borderRadius: "8px",
-                paddingY: 1.5,
-                width: "100%",
-                ":hover": {
-                  backgroundColor: "#005BB5",
-                },
-              }}
-            >
-              Proceed to Payment
-            </Button>
-          </Box>
+            Subtotal: ${totalPrice.toFixed(2)}
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: "#6E6E73",
+              marginBottom: 1,
+              textAlign: "center",
+            }}
+          >
+            GST (12%): ${gst}
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: "#6E6E73",
+              marginBottom: 3,
+              textAlign: "center",
+            }}
+          >
+            CGST (18%): ${cgst}
+          </Typography>
+          <Divider sx={{ width: "100%", marginBottom: 3 }} />
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              color: "#0071E3",
+              marginBottom: 3,
+              textAlign: "center",
+            }}
+          >
+            Grand Total: ${grandTotal}
+          </Typography>
+          <Button
+            component={Link}
+            to="/checkout"
+            variant="contained"
+            sx={{
+              backgroundColor: "#1d1d1f",
+              color: "white",
+              fontSize: "16px",
+              fontWeight: "bold",
+              borderRadius: "8px",
+              paddingY: 1.5,
+              width: "100%",
+              ":hover": {
+                backgroundColor: "#000",
+              },
+            }}
+          >
+            Proceed to Payment
+          </Button>
         </Box>
-      </Container>
+      </Box>
     </Box>
   );
 };

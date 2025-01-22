@@ -17,7 +17,7 @@ const products = [
     image: appleWatchImg,
     price: 399,
     description:
-      "The future of health monitoring on your wrist. It is worth tryig it",
+      " Redefine your style with the latest collection of Apple Watch bands. ",
   },
   {
     id: 3,

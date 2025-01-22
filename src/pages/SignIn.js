@@ -29,7 +29,7 @@ const Signin = () => {
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       toast.success("Signed in successfully!");
-      navigate("/");
+      navigate("/products");
     } catch (error) {
       toast.error("Invalid email or password. Try again.");
       setErrors({ email: "Invalid email or password." });

@@ -10,17 +10,15 @@ import {
   Button,
   Select,
   MenuItem,
-  Card,
-  CardContent,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Box,
-  Divider,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-
+import CartPlaceholder from "../assets/images/shopping-cart.jpeg"; // Linking the placeholder image
+import CreditCardIcon from "../assets/images/credit-card.svg";
 const Checkout = () => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
@@ -114,99 +112,142 @@ const Checkout = () => {
         </Typography>
 
         {cart.length === 0 ? (
-          <Typography
-            variant="body1"
-            align="center"
-            sx={{ color: "#6E6E73", marginTop: 3 }}
-          >
-            Your cart is empty.
-          </Typography>
-        ) : (
-          <Card
+          <Box
             sx={{
-              padding: 3,
-              borderRadius: 4,
-              boxShadow: 3,
-              marginBottom: 3,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              gap: 2,
             }}
           >
-            <CardContent>
-              <Typography
-                variant="h6"
-                sx={{ fontWeight: "bold", marginBottom: 2 }}
-              >
-                Subtotal: ${totalPrice.toFixed(2)}
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ marginBottom: 1, color: "#6E6E73" }}
-              >
-                GST (12%): ${gst}
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ marginBottom: 3, color: "#6E6E73" }}
-              >
-                CGST (18%): ${cgst}
-              </Typography>
-              <Divider sx={{ marginBottom: 3 }} />
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "bold",
-                  color: "#0071E3",
-                  marginBottom: 3,
-                  textAlign: "center",
+            <img
+              src={CartPlaceholder} // Linking the placeholder image
+              alt="Empty Cart"
+              style={{
+                width: "150px",
+                height: "150px",
+                objectFit: "contain",
+              }}
+            />
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", color: "#6E6E73" }}
+            >
+              Your cart is empty.
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#A1A1A6" }}>
+              Looks like you haven’t added anything to your cart yet.
+            </Typography>
+            <Button
+              onClick={() => navigate("/products")}
+              sx={{
+                marginTop: 2,
+                backgroundColor: "#1d1d1f",
+                color: "white",
+                textTransform: "uppercase",
+                fontWeight: "bold",
+                ":hover": { backgroundColor: "#000" },
+              }}
+            >
+              Start Shopping
+            </Button>
+          </Box>
+        ) : (
+          <Box>
+            {/* Credit Card Image */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: 3,
+              }}
+            >
+              <img
+                src={CreditCardIcon} // Updated to use the imported SVG
+                alt="Credit Card"
+                style={{
+                  width: "200px",
+                  height: "120px",
+                  objectFit: "contain",
                 }}
-              >
-                Grand Total: ${grandTotal}
-              </Typography>
+              />
+            </Box>
 
-              <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                Select Currency:
-              </Typography>
-              <Select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                fullWidth
-                sx={{ marginBottom: 3 }}
-              >
-                {Object.keys(exchangeRates).map((cur) => (
-                  <MenuItem key={cur} value={cur}>
-                    {cur}
-                  </MenuItem>
-                ))}
-              </Select>
+            {/* Currency and Subtotal Section */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 3,
+              }}
+            >
+              <Box>
+                <Typography variant="h6">Select Currency:</Typography>
+                <Select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  sx={{ width: "120px", marginTop: 1 }}
+                >
+                  {Object.keys(exchangeRates).map((cur) => (
+                    <MenuItem key={cur} value={cur}>
+                      {cur}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Box>
+              <Box>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  Subtotal: ${totalPrice.toFixed(2)}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "#6E6E73", marginTop: 1 }}
+                >
+                  GST (12%): ${gst}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "#6E6E73", marginTop: 0.5 }}
+                >
+                  CGST (18%): ${cgst}
+                </Typography>
+              </Box>
+            </Box>
 
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: "bold",
-                  marginBottom: 3,
-                  textAlign: "center",
-                }}
-              >
-                Total in {currency}: {convertedAmount.toFixed(2)} {currency}
-              </Typography>
+            {/* Grand Total */}
+            <Typography
+              variant="h5"
+              align="center"
+              sx={{
+                fontWeight: "bold",
+                color: "#0071E3",
+                marginBottom: 3,
+              }}
+            >
+              Grand Total: {convertedAmount.toFixed(2)} {currency}
+            </Typography>
 
-              <Button
-                variant="contained"
-                fullWidth
-                sx={{
-                  backgroundColor: "#0071E3",
-                  color: "white",
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                  borderRadius: 2,
-                  paddingY: 1.5,
-                  ":hover": { backgroundColor: "#005BB5" },
-                }}
-                onClick={handlePayment}
-              >
-                Pay Now
-              </Button>
-            </CardContent>
-          </Card>
+            {/* Pay Now Button */}
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{
+                backgroundColor: "#1d1d1f",
+                color: "white",
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: 2,
+                paddingY: 1.5,
+                ":hover": { backgroundColor: "#000" },
+              }}
+              onClick={handlePayment}
+            >
+              Pay Now
+            </Button>
+          </Box>
         )}
 
         {/* Payment Success Dialog */}
@@ -219,7 +260,7 @@ const Checkout = () => {
             sx: {
               padding: { xs: 2, md: 4 },
               borderRadius: 3,
-              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
+              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.4)",
               backgroundColor: "white",
             },
           }}
@@ -236,7 +277,13 @@ const Checkout = () => {
             }}
           >
             <CheckCircleIcon fontSize="large" sx={{ color: "#4CAF50" }} />
-            Payment Successful 🎉
+            <Typography
+              fontSize="large"
+              fontWeight="bold"
+              sx={{ color: "black" }}
+            >
+              Payment Successful
+            </Typography>
           </DialogTitle>
           <DialogContent
             sx={{
@@ -256,11 +303,14 @@ const Checkout = () => {
           </DialogContent>
           <DialogActions sx={{ justifyContent: "center" }}>
             <Button
-              onClick={() => navigate("/")}
+              onClick={() => {
+                setOpen(false);
+                navigate("/");
+              }}
               sx={{
-                backgroundColor: "#0071E3",
+                backgroundColor: "#1d1d1f",
                 color: "white",
-                ":hover": { backgroundColor: "#005BB5" },
+                ":hover": { backgroundColor: "#000" },
                 paddingX: 4,
                 borderRadius: 2,
               }}

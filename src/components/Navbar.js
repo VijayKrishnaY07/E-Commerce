@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -7,6 +7,7 @@ import {
   Typography,
   Box,
   Container,
+  IconButton,
 } from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../firebaseConfig";
@@ -14,15 +15,18 @@ import { signOut } from "firebase/auth";
 import { useSelector } from "react-redux";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
   const cart = useSelector((state) => state.cart);
   const favorites = useSelector((state) => state.favorites);
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await signOut(auth);
+    navigate("/");
   };
 
   return (
@@ -51,7 +55,7 @@ const Navbar = () => {
               letterSpacing: "0.8px",
             }}
           >
-            Tech Gadgets Store
+            Apple Store
           </Typography>
 
           {/* Navigation */}
@@ -140,17 +144,15 @@ const Navbar = () => {
                 >
                   {user.name}
                 </Typography>
-                <Button
+                <IconButton
                   onClick={handleLogout}
                   sx={{
-                    fontSize: "1rem",
-                    fontWeight: 500,
                     color: "#FF3B30", // Apple's red for sign-out (close buttons)
                     ":hover": { color: "#C22C21" }, // Darker red on hover
                   }}
                 >
-                  Signout
-                </Button>
+                  <LogoutIcon />
+                </IconButton>
               </>
             ) : (
               <Button
