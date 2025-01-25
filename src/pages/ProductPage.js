@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import products from "../data/products";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { addToCart } from "../redux/cartSlice";
 import {
   Container,
@@ -18,7 +19,7 @@ const ProductPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { user } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const product = products.find((p) => p.id === parseInt(id));
 
   if (!product) {
@@ -47,6 +48,7 @@ const ProductPage = () => {
 
     dispatch(addToCart({ userEmail: user.email, product }));
     toast.success(`${product.name} added to cart!`);
+    navigate("/cart");
   };
 
   return (
@@ -130,14 +132,14 @@ const ProductPage = () => {
               variant="contained"
               fullWidth
               sx={{
-                backgroundColor: "#0071E3",
+                backgroundColor: "#1d1d1f",
                 color: "white",
                 fontSize: "16px",
                 fontWeight: "bold",
                 borderRadius: "8px",
                 paddingY: 1.5,
                 ":hover": {
-                  backgroundColor: "#005BB5",
+                  backgroundColor: "#000",
                 },
               }}
               onClick={handleAddToCart}

@@ -91,7 +91,7 @@ const Home = () => {
             paddingBottom: { xs: 4, md: 8 },
           }}
         >
-          {/* Welcome Text - Positioned on top of the Apple logo */}
+          {/* Welcome Text */}
           <Box
             sx={{
               display: "flex",
@@ -105,17 +105,17 @@ const Home = () => {
               variant="h2"
               sx={{
                 fontWeight: "bold",
-
                 marginBottom: 0.1,
                 lineHeight: 1.2,
                 maxWidth: "800px",
+                fontSize: { xs: "1.8rem", sm: "2.5rem", md: "3rem" },
               }}
             >
               Welcome to Apple Store
             </Typography>
           </Box>
 
-          {/* Sub Text and Button - Positioned below the Apple logo */}
+          {/* Sub Text and Button */}
           <Box
             sx={{
               display: "flex",
@@ -130,9 +130,9 @@ const Home = () => {
               variant="h5"
               sx={{
                 color: "#000",
-
                 maxWidth: "600px",
                 lineHeight: 1.5,
+                fontSize: { xs: "1rem", sm: "1.2rem", md: "1.5rem" },
               }}
             >
               Discover the latest Apple products at unbeatable prices.
@@ -143,16 +143,16 @@ const Home = () => {
               to="/products"
               variant="contained"
               sx={{
-                backgroundColor: "black",
+                backgroundColor: "#1d1d1f",
                 color: "#FFFFFF",
                 fontWeight: "bold",
-                fontSize: "18px",
-                paddingX: 4,
-                paddingY: 1.5,
+                fontSize: { xs: "16px", sm: "18px", md: "20px" },
+                paddingX: { xs: 2, sm: 4 },
+                paddingY: { xs: 1, sm: 1.5 },
                 borderRadius: "8px",
                 boxShadow: "0px 4px 8px rgba(0,0,0,0.4)",
                 ":hover": {
-                  backgroundColor: "#005BB5",
+                  backgroundColor: "#000",
                 },
               }}
             >

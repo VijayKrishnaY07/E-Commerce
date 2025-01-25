@@ -51,8 +51,8 @@ const Products = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "100vh",
-        padding: 5,
+        minHeight: "100vh",
+        padding: { xs: 2, sm: 3, md: 5 },
         textAlign: "center",
         backgroundColor: "#fff",
       }}
@@ -60,7 +60,11 @@ const Products = () => {
       <Typography
         variant="h4"
         gutterBottom
-        sx={{ fontWeight: "bold", color: "#1D1D1F", marginBottom: 4 }}
+        sx={{
+          fontWeight: "bold",
+          color: "#1D1D1F",
+          marginBottom: 4,
+        }}
       >
         Apple Products
       </Typography>
@@ -71,13 +75,16 @@ const Products = () => {
           flexWrap: "wrap",
           gap: 4,
           justifyContent: "center",
+          alignContent: "flex-start",
+          overflowY: { xs: "scroll", md: "visible" },
+          height: { xs: "calc(100vh - 200px)", md: "auto" },
         }}
       >
         {products.map((product) => (
           <Card
             key={product.id}
             sx={{
-              width: 350,
+              width: { xs: "280px", sm: "300px", md: "350px" },
               boxShadow: 4,
               borderRadius: 6,
               overflow: "hidden",
@@ -117,7 +124,7 @@ const Products = () => {
                 image={product.image}
                 alt={product.name}
                 sx={{
-                  height: 250,
+                  height: { xs: 180, sm: 220, md: 250 },
                   objectFit: "contain",
                   backgroundColor: "#F9F9F9",
                 }}
@@ -157,7 +164,7 @@ const Products = () => {
           sx: {
             borderRadius: 3,
             padding: 2,
-            boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
+            boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.7)",
           },
         }}
       >
@@ -165,10 +172,10 @@ const Products = () => {
           sx={{
             fontWeight: "bold",
             textAlign: "center",
-            color: "#1D1D1F",
+            color: "red",
           }}
         >
-          Sign In Required
+          Profile Required
         </DialogTitle>
         <DialogContent sx={{ textAlign: "center", marginBottom: 2 }}>
           <Typography variant="body1" sx={{ color: "#6E6E73" }}>
@@ -191,9 +198,9 @@ const Products = () => {
           <Button
             onClick={() => navigate("/signin")}
             sx={{
-              backgroundColor: "#0071E3",
-              color: "white",
-              ":hover": { backgroundColor: "#005BB5" },
+              backgroundColor: "#1d1d1f",
+              color: "#fff",
+              ":hover": { backgroundColor: "#000" },
               paddingX: 4,
               borderRadius: 2,
             }}

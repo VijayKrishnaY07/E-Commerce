@@ -112,7 +112,7 @@ const Signin = () => {
                   type="submit"
                   variant="contained"
                   sx={{
-                    backgroundColor: "#0071E3",
+                    backgroundColor: "#1d1d1f",
                     color: "white",
                     fontSize: "16px",
                     fontWeight: "bold",
@@ -120,7 +120,7 @@ const Signin = () => {
                     padding: "12px",
                     marginTop: 2,
                     ":hover": {
-                      backgroundColor: "#005BB5",
+                      backgroundColor: "#000",
                     },
                   }}
                 >

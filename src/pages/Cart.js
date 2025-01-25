@@ -13,6 +13,7 @@ import {
   IconButton,
   Box,
   Divider,
+  useMediaQuery,
 } from "@mui/material";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
@@ -22,6 +23,8 @@ const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const { user } = useContext(AuthContext);
+
+  const isMobile = useMediaQuery("(max-width:768px)");
 
   if (!user) {
     return (
@@ -89,8 +92,8 @@ const Cart = () => {
             backgroundColor: "#F7F7F7",
             boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.15)",
             padding: 3,
-            maxHeight: "600px", // Fixed height for "Your Cart" container
-            overflowY: "auto",
+            maxHeight: { md: "600px" }, // Fixed height for larger screens
+            overflowY: { md: "auto" },
             width: "100%",
           }}
         >
@@ -111,49 +114,71 @@ const Cart = () => {
                 key={product.id}
                 sx={{
                   display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
                   alignItems: "center",
-                  gap: 2,
-                  padding: 2,
+                  justifyContent: "space-between",
+                  padding: 1,
+                  height: isMobile ? "70px" : "auto",
                   boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
                 }}
               >
                 <CardMedia
                   component="img"
-                  sx={{
-                    width: { xs: "100%", sm: 80 },
-                    height: { xs: "auto", sm: 80 },
-                    objectFit: "contain",
-                  }}
                   image={product.image || "/assets/images/placeholder.jpg"} // Placeholder for missing images
                   alt={product.name || "Unnamed Product"}
+                  sx={{
+                    width: isMobile ? 50 : 80,
+                    height: isMobile ? 50 : 80,
+                    borderRadius: "8px",
+                    objectFit: "contain",
+                  }}
                 />
-                <CardContent sx={{ flex: 1, paddingX: { xs: 0, sm: 2 } }}>
+                <CardContent
+                  sx={{
+                    flex: 1,
+                    padding: "0 8px",
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: isMobile ? "center" : "left",
+                  }}
+                >
                   <Typography
                     variant="subtitle1"
-                    sx={{ fontWeight: 500, color: "#1D1D1F" }}
+                    sx={{
+                      fontWeight: 500,
+                      fontSize: isMobile ? "14px" : "16px",
+                      color: "#1D1D1F",
+                    }}
                   >
                     {product.name || "Unnamed Product"}
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ color: "#6E6E73", marginBottom: 1 }}
+                    sx={{
+                      color: "#6E6E73",
+                    }}
                   >
-                    ${product.price ? product.price : "N/A"} x{" "}
-                    {product.quantity}
+                    ${product.price} x {product.quantity}
                   </Typography>
-                  <Typography
-                    variant="h6"
-                    sx={{ fontWeight: "bold", color: "#0071E3" }}
-                  >
-                    Total: $
-                    {product.price
-                      ? (product.price * product.quantity).toFixed(2)
-                      : "0.00"}
-                  </Typography>
+                  {!isMobile && (
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: "bold",
+                        color: "#0071E3",
+                      }}
+                    >
+                      Total: ${(product.price * product.quantity).toFixed(2)}
+                    </Typography>
+                  )}
                 </CardContent>
-
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: isMobile ? "center" : "flex-end",
+                    gap: 1,
+                  }}
+                >
                   <TextField
                     type="number"
                     value={product.quantity}
@@ -168,10 +193,10 @@ const Cart = () => {
                       );
                     }}
                     sx={{
-                      width: "60px",
+                      width: isMobile ? 50 : 60,
                       "& input": {
                         textAlign: "center",
-                        fontSize: "14px",
+                        fontSize: isMobile ? "12px" : "14px",
                         fontWeight: "bold",
                       },
                     }}
@@ -232,7 +257,7 @@ const Cart = () => {
         >
           <ShoppingCartOutlinedIcon
             sx={{
-              fontSize: 80,
+              fontSize: 60,
               color: "#0071E3",
               marginBottom: 2,
             }}
@@ -287,7 +312,7 @@ const Cart = () => {
             sx={{
               backgroundColor: "#1d1d1f",
               color: "white",
-              fontSize: "16px",
+              fontSize: { xs: "14px", sm: "16px" },
               fontWeight: "bold",
               borderRadius: "8px",
               paddingY: 1.5,

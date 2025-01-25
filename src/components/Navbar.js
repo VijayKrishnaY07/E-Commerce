@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -8,7 +8,14 @@ import {
   Box,
   Container,
   IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
 } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../firebaseConfig";
 import { signOut } from "firebase/auth";
@@ -23,6 +30,13 @@ const Navbar = () => {
   const favorites = useSelector((state) => state.favorites);
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
   const navigate = useNavigate();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  // Utility function to capitalize the first letter of the name
+  const capitalizeName = (name) => {
+    if (!name) return "";
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  };
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -33,7 +47,7 @@ const Navbar = () => {
     <AppBar
       position="fixed"
       sx={{
-        backgroundColor: "#000000", // Apple's iPhone page uses a black header
+        backgroundColor: "#000000",
         boxShadow: 0,
       }}
     >
@@ -46,22 +60,34 @@ const Navbar = () => {
             width: "100%",
           }}
         >
+          {/* Mobile Hamburger Menu */}
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ display: { xs: "block", md: "none" } }}
+            onClick={() => setIsDrawerOpen(true)}
+          >
+            <MenuIcon />
+          </IconButton>
+
           {/* Store Name */}
           <Typography
             variant="h6"
             sx={{
               fontWeight: "bold",
-              color: "#FFFFFF", // White text on black background
+              color: "#FFFFFF",
               letterSpacing: "0.8px",
+              marginRight: { xs: 2 }, // Add padding on small screens
             }}
           >
             Apple Store
           </Typography>
 
-          {/* Navigation */}
+          {/* Desktop Navigation */}
           <Box
             sx={{
-              display: "flex",
+              display: { xs: "none", md: "flex" },
               gap: 3,
               alignItems: "center",
               flexWrap: "nowrap",
@@ -73,8 +99,8 @@ const Navbar = () => {
               sx={{
                 fontSize: "1rem",
                 fontWeight: 500,
-                color: "#FFFFFF", // White links
-                ":hover": { color: "#A1A1A6" }, // Light gray hover
+                color: "#FFFFFF",
+                ":hover": { color: "#A1A1A6" },
               }}
             >
               Home
@@ -139,16 +165,16 @@ const Navbar = () => {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
-                    color: "#FFFFFF", // White text for user name
+                    color: "#FFFFFF",
                   }}
                 >
-                  {user.name}
+                  {capitalizeName(user.name)}
                 </Typography>
                 <IconButton
                   onClick={handleLogout}
                   sx={{
-                    color: "#FF3B30", // Apple's red for sign-out (close buttons)
-                    ":hover": { color: "#C22C21" }, // Darker red on hover
+                    color: "#FF3B30",
+                    ":hover": { color: "#C22C21" },
                   }}
                 >
                   <LogoutIcon />
@@ -171,6 +197,106 @@ const Navbar = () => {
           </Box>
         </Toolbar>
       </Container>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="left"
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        PaperProps={{
+          sx: {
+            width: 250,
+            backgroundColor: "#000000",
+            color: "#FFFFFF",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 2,
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+            Menu
+          </Typography>
+          <IconButton
+            onClick={() => setIsDrawerOpen(false)}
+            sx={{ color: "#FFFFFF" }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <Divider sx={{ backgroundColor: "#A1A1A6" }} />
+        <List>
+          <ListItem
+            button
+            component={Link}
+            to="/"
+            onClick={() => setIsDrawerOpen(false)}
+            sx={{ color: "#FFFFFF" }} // White color for all menu items
+          >
+            <ListItemText primary="Home" />
+          </ListItem>
+          <ListItem
+            button
+            component={Link}
+            to="/products"
+            onClick={() => setIsDrawerOpen(false)}
+            sx={{ color: "#FFFFFF" }}
+          >
+            <ListItemText primary="Products" />
+          </ListItem>
+          {user && (
+            <>
+              <ListItem
+                button
+                component={Link}
+                to="/favorites"
+                onClick={() => setIsDrawerOpen(false)}
+                sx={{ color: "#FFFFFF" }}
+              >
+                <FavoriteOutlinedIcon sx={{ marginRight: 1 }} />
+                <ListItemText primary={`Favorites (${favorites.length})`} />
+              </ListItem>
+              <ListItem
+                button
+                component={Link}
+                to="/cart"
+                onClick={() => setIsDrawerOpen(false)}
+                sx={{ color: "#FFFFFF" }}
+              >
+                <ShoppingBagOutlinedIcon sx={{ marginRight: 1 }} />
+                <ListItemText primary={`Cart (${cartItemCount})`} />
+              </ListItem>
+            </>
+          )}
+          {user ? (
+            <ListItem
+              button
+              onClick={handleLogout}
+              sx={{
+                color: "#FF3B30", // Red color for Logout
+              }}
+            >
+              <LogoutIcon sx={{ marginRight: 1 }} />
+              <ListItemText primary="Logout" />
+            </ListItem>
+          ) : (
+            <ListItem
+              button
+              component={Link}
+              to="/signin"
+              onClick={() => setIsDrawerOpen(false)}
+              sx={{ color: "#FFFFFF" }}
+            >
+              <ListItemText primary="Signin" />
+            </ListItem>
+          )}
+        </List>
+      </Drawer>
     </AppBar>
   );
 };

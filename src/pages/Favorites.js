@@ -45,10 +45,7 @@ const Favorites = () => {
   }, [dispatch, user]);
 
   const handleAddToCart = (product) => {
-    if (!product || !product.id) {
-      console.error("Invalid product object:", product);
-      return;
-    }
+    if (!product || !product.id) return;
     if (!user?.email) {
       toast.error("You must be logged in to add items to the cart.");
       return;
@@ -59,10 +56,6 @@ const Favorites = () => {
   };
 
   const handleUpdateQuantity = (productId, newQuantity) => {
-    if (!user?.email) {
-      toast.error("You must be logged in to update cart items.");
-      return;
-    }
     dispatch(
       updateCartQuantity({
         userEmail: user.email,
@@ -72,37 +65,27 @@ const Favorites = () => {
     );
   };
 
-  const handleRemoveFromCart = (productId) => {
-    if (!user?.email) {
-      toast.error("You must be logged in to remove cart items.");
-      return;
-    }
-    dispatch(
-      removeFromCart({
-        userEmail: user.email,
-        productId,
-      })
-    );
-  };
-
   return (
     <Box
       sx={{
         minHeight: "100vh",
         display: "flex",
+        flexDirection: { xs: "column", md: "row" },
         justifyContent: "center",
-        alignItems: "center",
-        gap: 4,
+        alignItems: { xs: "flex-start", md: "center" },
+        gap: { xs: 2, md: 4 },
         padding: "50px 4px",
         backgroundColor: "#F5F5F5",
       }}
     >
-      {/* Favorites List */}
+      {/* Favorites Container */}
       <Box
         sx={{
           flex: 1,
-          maxWidth: "40%",
-          height: "60vh",
+          maxWidth: { xs: "90%", md: "40%" }, // Reduced width for mobile screens
+          minHeight: "500px",
+          width: { xs: "90%", md: "unset" }, // Ensures full width on mobile
+          minWidth: { xs: "280px", md: "unset" }, // Prevents shrinking on mobile
           display: "flex",
           flexDirection: "column",
           gap: 2,
@@ -143,29 +126,51 @@ const Favorites = () => {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      padding: 1.5,
+                      justifyContent: "space-between",
+                      padding: "16px",
                       boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                      borderRadius: "8px",
                     }}
                   >
                     <CardMedia
                       component="img"
                       image={product?.image}
                       alt={product?.name || "Product"}
-                      sx={{ width: 60, height: 60 }}
+                      sx={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: "8px",
+                        objectFit: "cover",
+                      }}
                     />
-                    <CardContent sx={{ flex: 1, padding: "0 8px" }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                    <CardContent
+                      sx={{
+                        flex: 1,
+                        padding: "0 16px",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ fontWeight: 500, fontSize: "14px" }}
+                      >
                         {product?.name}
                       </Typography>
                       <Typography
                         variant="body2"
-                        color="textSecondary"
-                        sx={{ marginTop: "4px" }}
+                        sx={{ marginTop: "4px", fontSize: "12px" }}
                       >
                         ${product?.price}
                       </Typography>
                     </CardContent>
-                    <Box sx={{ display: "flex", gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
                       <IconButton onClick={() => handleAddToCart(product)}>
                         <ShoppingCartOutlinedIcon />
                       </IconButton>
@@ -191,6 +196,8 @@ const Favorites = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   height: "100%",
+                  width: "100%",
+                  textAlign: "center",
                   color: "#A1A1A6",
                 }}
               >
@@ -198,7 +205,7 @@ const Favorites = () => {
                   sx={{ fontSize: 50, marginBottom: 1 }}
                 />
                 <Typography variant="body1" sx={{ color: "#6E6E73" }}>
-                  No items are added to favorites.
+                  No items in your favorites.
                 </Typography>
               </Box>
             )}
@@ -206,12 +213,14 @@ const Favorites = () => {
         </Box>
       </Box>
 
-      {/* Cart Side */}
+      {/* Cart Container */}
       <Box
         sx={{
           flex: 1,
-          maxWidth: "40%",
-          height: "60vh",
+          maxWidth: { xs: "90%", md: "40%" }, // Reduced width for mobile screens
+          minHeight: "500px",
+          width: { xs: "90%", md: "unset" },
+          minWidth: { xs: "280px", md: "unset" },
           display: "flex",
           flexDirection: "column",
           gap: 2,
@@ -252,25 +261,51 @@ const Favorites = () => {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      padding: 1.5,
+                      justifyContent: "space-between",
+                      padding: "16px",
                       boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                      borderRadius: "8px",
                     }}
                   >
                     <CardMedia
                       component="img"
                       image={item?.image}
                       alt={item?.name || "Cart Item"}
-                      sx={{ width: 60, height: 60 }}
+                      sx={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: "8px",
+                        objectFit: "cover",
+                      }}
                     />
-                    <CardContent sx={{ flex: 1, padding: "0 8px" }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                    <CardContent
+                      sx={{
+                        flex: 1,
+                        padding: "0 16px",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ fontWeight: 500, fontSize: "14px" }}
+                      >
                         {item?.name}
                       </Typography>
-                      <Typography variant="body2" sx={{ marginTop: "4px" }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ marginTop: "4px", fontSize: "12px" }}
+                      >
                         ${item?.price} x {item?.quantity}
                       </Typography>
                     </CardContent>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
                       <TextField
                         type="number"
                         value={item?.quantity}
@@ -292,7 +327,14 @@ const Favorites = () => {
                       />
                       <IconButton
                         sx={{ color: "gray" }}
-                        onClick={() => handleRemoveFromCart(item.id)}
+                        onClick={() =>
+                          dispatch(
+                            removeFromCart({
+                              userEmail: user.email,
+                              productId: item.id,
+                            })
+                          )
+                        }
                       >
                         <DeleteOutlinedIcon />
                       </IconButton>
@@ -308,6 +350,8 @@ const Favorites = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   height: "100%",
+                  width: "100%",
+                  textAlign: "center",
                   color: "#A1A1A6",
                 }}
               >
@@ -323,7 +367,7 @@ const Favorites = () => {
         </Box>
         <Box sx={{ marginTop: "auto", padding: 2, textAlign: "center" }}>
           <Button
-            onClick={() => navigate("/cart")}
+            onClick={() => navigate("/checkout")}
             variant="contained"
             sx={{
               backgroundColor: "#1d1d1f",
